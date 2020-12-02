@@ -338,7 +338,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,__FPU_USED=1</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\BSP\BUZZER;..\BSP\CAN;..\BSP\ELMO;..\BSP\TOUCH_SWITCH;..\ROBOT</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\HARDWARE\CAN;..\HARDWARE\ENCODER;..\HARDWARE\LED;..\HARDWARE\PID;..\HARDWARE\PWM;..\HARDWARE\TB6612;..\HARDWARE\TIMER;..\ROBOT\MOVE;..\ROBOT\PATH;..\ROBOT\RC_PS2</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -401,61 +401,6 @@
               <FileName>PR_Task.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\PR_Task.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>BSP</GroupName>
-          <Files>
-            <File>
-              <FileName>buzzer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\BUZZER\buzzer.c</FilePath>
-            </File>
-            <File>
-              <FileName>can.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\CAN\can.c</FilePath>
-            </File>
-            <File>
-              <FileName>elmo.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\ELMO\elmo.c</FilePath>
-            </File>
-            <File>
-              <FileName>touch_switch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\BSP\TOUCH_SWITCH\touch_switch.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>ROBOT</GroupName>
-          <Files>
-            <File>
-              <FileName>path.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ROBOT\path.c</FilePath>
-            </File>
-            <File>
-              <FileName>cylinder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ROBOT\cylinder.c</FilePath>
-            </File>
-            <File>
-              <FileName>move.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ROBOT\move.c</FilePath>
-            </File>
-            <File>
-              <FileName>throw.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ROBOT\throw.c</FilePath>
-            </File>
-            <File>
-              <FileName>frictionwheel.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\ROBOT\frictionwheel.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -761,6 +706,66 @@
               <FileName>os_cfg_app.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\UCOSIII\uCOS_CONFIG\os_cfg_app.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>HARDWARE</GroupName>
+          <Files>
+            <File>
+              <FileName>can.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\CAN\can.c</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\ENCODER\encoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\LED\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\PID\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>tb6612.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TB6612\tb6612.c</FilePath>
+            </File>
+            <File>
+              <FileName>tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIMER\tim.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>ROBOT</GroupName>
+          <Files>
+            <File>
+              <FileName>move.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ROBOT\MOVE\move.c</FilePath>
+            </File>
+            <File>
+              <FileName>path.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ROBOT\PATH\path.c</FilePath>
+            </File>
+            <File>
+              <FileName>PS2trans.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ROBOT\RC_PS2\PS2trans.c</FilePath>
+            </File>
+            <File>
+              <FileName>RC_ps2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ROBOT\RC_PS2\RC_ps2.c</FilePath>
             </File>
           </Files>
         </Group>

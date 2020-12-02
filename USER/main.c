@@ -1,89 +1,79 @@
 #include "includes.h"
-#include "touch_switch.h"
-#include "PR_Task.h"
-#include "move.h"
-#include "path.h"
-#include "size.h"
 
 
-/*ÈÎÎñÓÅÏÈ¼¶*/
+/*ä»»åŠ¡ä¼˜å…ˆçº§*/
 #define START_TASK_PRIO		3
 #define CONTROL_TASK_PRIO	10
 #define LOOP_TASK_PRIO		13
 #define CATCH_TASK_PRIO		15
 
-/*ÈÎÎñ¶ÑÕ»´óĞ¡*/	
+/*ä»»åŠ¡å †æ ˆå¤§å°*/	
 #define START_STK_SIZE 		128
 #define CONTROL_STK_SIZE 	128
 #define LOOP_STK_SIZE 		128
 #define CATCH_STK_SIZE 		128
 
-/*ÈÎÎñ¿ØÖÆ¿é¶¨Òå*/
+/*ä»»åŠ¡æ§åˆ¶å—å®šä¹‰*/
 OS_TCB StartTaskTCB;
 OS_TCB Control_taskTCB;
 OS_TCB Loop_taskTCB;
 OS_TCB Catch_taskTCB;
 
-/*ÈÎÎñ¶ÑÕ»¶¨Òå*/	
+/*ä»»åŠ¡å †æ ˆå®šä¹‰*/	
 CPU_STK START_TASK_STK[START_STK_SIZE];
 CPU_STK CONTROL_TASK_STK[CONTROL_STK_SIZE];
 CPU_STK LOOP_TASK_STK[LOOP_STK_SIZE];
 CPU_STK CATCH_TASK_STK[CATCH_STK_SIZE];
 
-//ÈÎÎñº¯ÊıÉùÃ÷*/
-void Start_task(void *p_arg);		//´´½¨ÈÎÎñµÄÈÎÎñ
-void Control_task(void *p_arg);		//µç»ú¿ØÖÆÈÎÎñ
-void Loop_task(void *p_arg);		//µ×ÅÌ±Õ»·ÈÎÎñ
-void Catch_task(void *p_arg);		//×¥ÇòÈÎÎñ
+//ä»»åŠ¡å‡½æ•°å£°æ˜*/
+void Start_task(void *p_arg);		//åˆ›å»ºä»»åŠ¡çš„ä»»åŠ¡
+void Control_task(void *p_arg);		//ç”µæœºæ§åˆ¶ä»»åŠ¡
+void Loop_task(void *p_arg);		//åº•ç›˜é—­ç¯ä»»åŠ¡
+void Catch_task(void *p_arg);		//æŠ“çƒä»»åŠ¡
 
 u8 reset_gyro_cmd[2]= {0x55,0XAA};
 	
 				
 
-//Ö÷º¯Êı
+//ä¸»å‡½æ•°
 int main(void)
 {
 	OS_ERR err;
 	CPU_SR_ALLOC();
 	
 	
-	delay_init(168);  //Ê±ÖÓ³õÊ¼»¯
-	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//ÖĞ¶Ï·Ö×éÅäÖÃ
-	uart_init(115200);   //´®¿Ú³õÊ¼»¯
-	
-	Elmo_Init(CAN1, 1,0);
-	delay_ms(100);
-	CAN2_Init();
-	Touch_Switch_Init();
-	Cylinder_Init();
-	//Throw_Init();	
-	PID_Init(&Pid_Pos_X,300,0,0,500000,-500000,1000000,-1000000);
-	PID_Init(&Pid_Pos_Y,300,0,0,500000,-500000,1000000,-1000000);
-	PID_Init(&Pid_Pos_Ang,500,0,6,500000,-500000,1000000,-1000000);
-	
+	delay_init(168);  //æ—¶é’Ÿåˆå§‹åŒ–
+	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//ä¸­æ–­åˆ†ç»„é…ç½®
+	uart_init(115200);   //ä¸²å£åˆå§‹åŒ–
 
- 	OSInit(&err);		    //³õÊ¼»¯UCOSIII
-	OS_CRITICAL_ENTER();	//½øÈëÁÙ½çÇø			 
-	//´´½¨¿ªÊ¼ÈÎÎñ
-	OSTaskCreate((OS_TCB 	* )&StartTaskTCB,		//ÈÎÎñ¿ØÖÆ¿é
-				 (CPU_CHAR	* )"Start_task", 		//ÈÎÎñÃû×Ö
-                 (OS_TASK_PTR )Start_task, 			//ÈÎÎñº¯Êı
-                 (void		* )0,					//´«µİ¸øÈÎÎñº¯ÊıµÄ²ÎÊı
-                 (OS_PRIO	  )START_TASK_PRIO,     //ÈÎÎñÓÅÏÈ¼¶
-                 (CPU_STK   * )&START_TASK_STK[0],	//ÈÎÎñ¶ÑÕ»»ùµØÖ·
-                 (CPU_STK_SIZE)START_STK_SIZE/10,	//ÈÎÎñ¶ÑÕ»Éî¶ÈÏŞÎ»
-                 (CPU_STK_SIZE)START_STK_SIZE,		//ÈÎÎñ¶ÑÕ»´óĞ¡
-                 (OS_MSG_QTY  )0,					//ÈÎÎñÄÚ²¿ÏûÏ¢¶ÓÁĞÄÜ¹»½ÓÊÕµÄ×î´óÏûÏ¢ÊıÄ¿,Îª0Ê±½ûÖ¹½ÓÊÕÏûÏ¢
-                 (OS_TICK	  )0,					//µ±Ê¹ÄÜÊ±¼äÆ¬ÂÖ×ªÊ±µÄÊ±¼äÆ¬³¤¶È£¬Îª0Ê±ÎªÄ¬ÈÏ³¤¶È£¬
-                 (void   	* )0,					//ÓÃ»§²¹³äµÄ´æ´¢Çø
-                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //ÈÎÎñÑ¡Ïî
-                 (OS_ERR 	* )&err);				//´æ·Å¸Ãº¯Êı´íÎóÊ±µÄ·µ»ØÖµ
-	OS_CRITICAL_EXIT();	//ÍË³öÁÙ½çÇø	 
-	OSStart(&err);      //¿ªÆôUCOSIII
+    /*è‡ªå®šä¹‰åˆå§‹åŒ–*/
+	CAN1_Init();
+    Encoder_Init();
+    LED_Init();
+	Chassis_Init();
+	
+ 	OSInit(&err);		    //åˆå§‹åŒ–UCOSIII
+	OS_CRITICAL_ENTER();	//è¿›å…¥ä¸´ç•ŒåŒº			 
+	//åˆ›å»ºå¼€å§‹ä»»åŠ¡
+	OSTaskCreate((OS_TCB 	* )&StartTaskTCB,		//ä»»åŠ¡æ§åˆ¶å—
+				 (CPU_CHAR	* )"Start_task", 		//ä»»åŠ¡åå­—
+                 (OS_TASK_PTR )Start_task, 			//ä»»åŠ¡å‡½æ•°
+                 (void		* )0,					//ä¼ é€’ç»™ä»»åŠ¡å‡½æ•°çš„å‚æ•°
+                 (OS_PRIO	  )START_TASK_PRIO,     //ä»»åŠ¡ä¼˜å…ˆçº§
+                 (CPU_STK   * )&START_TASK_STK[0],	//ä»»åŠ¡å †æ ˆåŸºåœ°å€
+                 (CPU_STK_SIZE)START_STK_SIZE/10,	//ä»»åŠ¡å †æ ˆæ·±åº¦é™ä½
+                 (CPU_STK_SIZE)START_STK_SIZE,		//ä»»åŠ¡å †æ ˆå¤§å°
+                 (OS_MSG_QTY  )0,					//ä»»åŠ¡å†…éƒ¨æ¶ˆæ¯é˜Ÿåˆ—èƒ½å¤Ÿæ¥æ”¶çš„æœ€å¤§æ¶ˆæ¯æ•°ç›®,ä¸º0æ—¶ç¦æ­¢æ¥æ”¶æ¶ˆæ¯
+                 (OS_TICK	  )0,					//å½“ä½¿èƒ½æ—¶é—´ç‰‡è½®è½¬æ—¶çš„æ—¶é—´ç‰‡é•¿åº¦ï¼Œä¸º0æ—¶ä¸ºé»˜è®¤é•¿åº¦ï¼Œ
+                 (void   	* )0,					//ç”¨æˆ·è¡¥å……çš„å­˜å‚¨åŒº
+                 (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, //ä»»åŠ¡é€‰é¡¹
+                 (OS_ERR 	* )&err);				//å­˜æ”¾è¯¥å‡½æ•°é”™è¯¯æ—¶çš„è¿”å›å€¼
+	OS_CRITICAL_EXIT();	//é€€å‡ºä¸´ç•ŒåŒº	 
+	OSStart(&err);      //å¼€å¯UCOSIII
 }
 
 
-//¿ªÊ¼ÈÎÎñÈÎÎñº¯Êı
+//å¼€å§‹ä»»åŠ¡ä»»åŠ¡å‡½æ•°
 void Start_task(void *p_arg)
 {
 	OS_ERR err;
@@ -92,15 +82,12 @@ void Start_task(void *p_arg)
 	
 	
 	CPU_Init();
-//	CAN2_Send_Msg(reset_gyro_cmd,2,0x15);		//³õÊ¼»¯ÍÓÂİÒÇ	
-//	delay_ms(4000);
-	
-	
-	//OSStatTaskCPUUsageInit(&err);  	//Í³¼ÆÈÎÎñ                
-	//Ê¹ÄÜÊ±¼äÆ¬ÂÖ×ªµ÷¶È¹¦ÄÜ,Ê±¼äÆ¬³¤¶ÈÎª1¸öÏµÍ³Ê±ÖÓ½ÚÅÄ£¬¼È1*5=5ms
+
+	//OSStatTaskCPUUsageInit(&err);  	//ç»Ÿè®¡ä»»åŠ¡                
+	//ä½¿èƒ½æ—¶é—´ç‰‡è½®è½¬è°ƒåº¦åŠŸèƒ½,æ—¶é—´ç‰‡é•¿åº¦ä¸º1ä¸ªç³»ç»Ÿæ—¶é’ŸèŠ‚æ‹ï¼Œæ—¢1*5=5ms
 	//OSSchedRoundRobinCfg(DEF_ENABLED,1,&err);  
-	OS_CRITICAL_ENTER();	//½øÈëÁÙ½çÇø
-	//´´½¨µç»ú¿ØÖÆÈÎÎñ
+	OS_CRITICAL_ENTER();	//è¿›å…¥ä¸´ç•ŒåŒº
+	//åˆ›å»ºç”µæœºæ§åˆ¶ä»»åŠ¡
 	OSTaskCreate((OS_TCB 	* )&Control_taskTCB,		
 				 (CPU_CHAR	* )"Control_task", 		
                  (OS_TASK_PTR )Control_task, 			
@@ -114,7 +101,7 @@ void Start_task(void *p_arg)
                  (void   	* )0,					
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR,
                  (OS_ERR 	* )&err);
-	//´´½¨µ×ÅÌ±Õ»·ÈÎÎñ
+	//åˆ›å»ºåº•ç›˜é—­ç¯ä»»åŠ¡
 	OSTaskCreate((OS_TCB 	* )&Loop_taskTCB,		
 				 (CPU_CHAR	* )"Loop_task", 		
                  (OS_TASK_PTR )Loop_task, 			
@@ -128,7 +115,7 @@ void Start_task(void *p_arg)
                  (void   	* )0,				
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);		
-	//´´½¨×¥ÇòÈÎÎñ			 
+	//åˆ›å»ºæŠ“çƒä»»åŠ¡			 
 	OSTaskCreate((OS_TCB 	* )&Catch_taskTCB,		
 				 (CPU_CHAR	* )"Catch_task", 		
                  (OS_TASK_PTR )Catch_task, 			
@@ -143,8 +130,7 @@ void Start_task(void *p_arg)
                  (OS_OPT      )OS_OPT_TASK_STK_CHK|OS_OPT_TASK_STK_CLR, 
                  (OS_ERR 	* )&err);			 
 
-//	flag_pos = FLAG_DEBUG;
-	OS_CRITICAL_EXIT();	//ÍË³öÁÙ½çÇø
-	OSTaskDel((OS_TCB*)0,&err);	//É¾³ıstart_taskÈÎÎñ×ÔÉí
+	OS_CRITICAL_EXIT();	//é€€å‡ºä¸´ç•ŒåŒº
+	OSTaskDel((OS_TCB*)0,&err);	//åˆ é™¤start_taskä»»åŠ¡è‡ªèº«
 }
 

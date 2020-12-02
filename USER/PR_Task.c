@@ -1,16 +1,23 @@
-#include "PR_Task.h"
 #include "os.h"
-#include "size.h"
+#include "includes.h"
+#include "struct.h"
 
-extern unsigned int cnt_x;
-extern unsigned int cnt_y;
-/*Ä¦²ÁÂÖ×ªËÙ*/
-int FrictionWheel_Vel = 3000;//6710
-extern u8 Set_Gyro_Cmd[2];
-extern u8 Data_Test[8] ;
+Chassis_t Chassis = {0};
 
-//µç»ú¿ØÖÆÈÎÎñ
 void Control_task(void *p_arg)
+{
+	while(1)
+	{
+		//Motor_SetPWM()
+	}
+}
+void Loop_task(void *p_arg)
+{}
+void Catch_task(void *p_arg)
+{}
+/*
+//ç”µæœºæ§åˆ¶ä»»åŠ¡
+
 {
 	volatile static CPU_SR cpu_sr;
 	int j=0;
@@ -22,8 +29,8 @@ void Control_task(void *p_arg)
 		Elmo_PVM(1,vel[0]);
 		Elmo_PVM(2,vel[1]);
 		Elmo_PVM(3,vel[2]);
-		Elmo_PVM(4,vel[3]);		//Elmo_PVM¸Ä±äÒª·¢ËÍµÄÖµ£¬Ã¿¸ô100us¶¨Ê±Æ÷²úÉúÖĞ¶Ï½«Õâ¸öÖµ·¢ËÍ³öÈ¥
-		//OS_CRITICAL_EXIT();		//¼ÓÁÙ½çÇø±ÜÃâÔÚ·¢ËÍÊı¾İ¸ü¸ÄÆÚ¼ä½øÈëÖĞ¶Ï
+		Elmo_PVM(4,vel[3]);		//Elmo_PVMæ”¹å˜è¦å‘é€çš„å€¼ï¼Œæ¯éš”100uså®šæ—¶å™¨äº§ç”Ÿä¸­æ–­å°†è¿™ä¸ªå€¼å‘é€å‡ºå»
+		//OS_CRITICAL_EXIT();		//åŠ ä¸´ç•ŒåŒºé¿å…åœ¨å‘é€æ•°æ®æ›´æ”¹æœŸé—´è¿›å…¥ä¸­æ–­
 		
 		if(j<=5)
 		{
@@ -44,48 +51,10 @@ void Control_task(void *p_arg)
 }
 
 
-//µ×ÅÌ±Õ»·ÈÎÎñ
-void Loop_task(void *p_arg)
-{
-	int i=0;
-	p_arg = p_arg;
-	while(1)
-	{
-		switch(flag_pos) 
-		{
-			case 1:
-//				if(i == 0)
-//				{
-//					CAN2_Send_Msg(Set_Gyro_Cmd,2,0x15);		//³õÊ¼»¯ÍÓÂİÒÇ
-//					delay_ms(5);
-//					CAN2_Send_Msg(Data_Test,8,0x15);		//³õÊ¼»¯ÍÓÂİÒÇ
-//					EncoderSet(50,28);
-//				}
-				first_ball();	
-				/*i++; */	  		break;
-			case 20:
-				second_ball();	break;
-			case 30:
-				third_ball();	break;
-			case 40:
-				fourth_ball();	break;
-			case 50:
-				fifth_ball();	break;
-			case 200:
-				PID_Pos(aim_x, current_x, aim_y, current_y, aim_angle , realAng);  //±£³ÖÎ»ÖÃ²»±ä
-				break;
-			case FLAG_DEBUG:	//²âÊÔº¯Êı£¬ÖÃFLAG_DEBUGÎª222½øÈëdebug()Ö®ÖĞ(main.c 147ĞĞ£©
-				debug();		break;
-			default:
-				PID_Pos(aim_x, current_x, aim_y, current_y, aim_angle , realAng);  //±£³ÖÎ»ÖÃ²»±ä
-				break;
-		}
-			delay_ms(5);
-	}
-}
 
-//×¥ÇòÈÎÎñ
-void Catch_task(void *p_arg)
+
+//æŠ“çƒä»»åŠ¡
+
 {
 	p_arg = p_arg;
 	while(1)
@@ -99,7 +68,7 @@ void Catch_task(void *p_arg)
 	}
 
 }
-
+*/
 
 
 

@@ -81,11 +81,13 @@
 #include  <bsp.h>
 //#include  <bsp_int.h>
 
-#include "elmo.h"
-#include "move.h"
-#include "touch_switch.h"
-#include "throw.h"
-#include "cylinder.h"
-#include "buzzer.h"
+#include <move.h>
+#include <can.h>
+#include <encoder.h>
+#include <led.h>
+#include <pid.h>
+#include <pwm.h>
+#include <tb6612.h>
+#include <tim.h>
 
 #endif
