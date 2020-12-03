@@ -109,16 +109,16 @@ void Motor_PWMInit(void)
 	TIM_OC1PreloadConfig(TIM11, TIM_OCPreload_Enable);  
  
 	TIM_ARRPreloadConfig(TIM8,ENABLE);						  //在溢出后重新载入
-	TIM_CtrlPWMOutputs(TIM8,ENABLE);						  //高级TIM想输出PWM要设置这个
+	TIM_CtrlPWMOutputs  (TIM8,ENABLE);						  //高级TIM想输出PWM要设置这个
 	TIM_ARRPreloadConfig(TIM10,ENABLE);
 	TIM_ARRPreloadConfig(TIM11,ENABLE);
 	
-	TIM_Cmd(TIM8, ENABLE);  
+	TIM_Cmd(TIM8,  ENABLE);  
 	TIM_Cmd(TIM10, ENABLE);  
 	TIM_Cmd(TIM11, ENABLE);  
  	
-	TIM_SetCompare1(TIM8,0);								  //PWM输出值
-	TIM_SetCompare2(TIM8,0);
+	TIM_SetCompare1(TIM8, 0);								  //PWM输出值
+	TIM_SetCompare2(TIM8, 0);
 	TIM_SetCompare1(TIM11,0);
 	TIM_SetCompare1(TIM10,0);	
 }  

@@ -3,7 +3,7 @@
 #include "sys.h"
 #include "pid.h"	
 
-#define GORY_ID			0x7AD	
+#define GYRO_ID			0x7AD	
 #define F1_ID           0x7AC
 
 

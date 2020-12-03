@@ -46,23 +46,16 @@ void PID_Cal(PID_t *PID, float goal, float now_val)
 	PID->D_out = PID->Kd * delta_err;
 	
 	PID->PID_OUT = PID->P_out + PID->I_out + PID->D_out;
-	PID->PID_OUT = MY_LIMIT(PID->PID_OUT, PID->Max, PID->Min);
+	PID->PID_OUT = AMP_LIMIT(PID->PID_OUT, PID->Max, PID->Min);
 }
 
-
-void Pos_PidCal(Pos_t goal_pos)
+void Pos_PidCal(void)
 {
 	PID_Cal(&(Chassis.pid_x), Chassis.Goal_pos.x, Chassis.Real_pos.x);
 	PID_Cal(&(Chassis.pid_y), Chassis.Goal_pos.y, Chassis.Real_pos.y);
 	PID_Cal(&(Chassis.pid_z), Chassis.Goal_pos.z, Chassis.Real_pos.z);
 }
 
-
-//全速时速度值能达到2000(cnt/5ms),即err最大可达到4000
-//V1~V4取值就在±2850之间(2000/0.7)
-//速度PID计算
-//vx,vy,vz:目标速度
-//计算结果：脉宽增量
 void Vel_PidCal(void)
 {
 	for(u8 i=0;i<4;i++)

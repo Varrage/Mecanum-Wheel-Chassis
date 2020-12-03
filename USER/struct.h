@@ -10,6 +10,15 @@
 	#define CHASSIS_EXT extern
 #endif
 
+/*一些数值限制*/
+#define TIM_PERIOD	1000    //脉冲宽度限制
+#define VX_LIMIT	1500
+#define VY_LIMIT	1500
+#define VZ_LIMIT	700
+
+#define ENCODER_WIRE		500										//编码器线程
+#define DEC_RAYIO			30										//电机减速比
+
 #define PI						(3.141592653f)
 /*码盘从动轮直径mm*/
 #define SUBWHEEL_DIAMETER		(50.7f)
@@ -26,20 +35,21 @@
 /*码盘数据转化为真实坐标值mm*/
 #define Encoder2Real(x)			((x) * (SUBWHEEL_DIAMETER * PI) / 2000)
 /*角度制与弧度制的相互转换*/
-#define rad2deg(rad)		((rad) / PI * 180)						
-#define deg2rad(deg)		((deg) * PI / 180)
+#define rad2deg(rad)			((rad) / PI * 180)						
+#define deg2rad(deg)			((deg) * PI / 180)
 	
 /*车体前进速度mm/s转化为轮子的转速rps*/
 #define	MMS_2_RPS(x)			((x)/(PI*WHEEL_DIAMETER))
 /*30速度转换*/
 #define RPS2JV(rps)				((int)(rps*(2000*EC30RR)))
 	
-
-
 /*限幅*/
 #define AMP_LIMIT(x,max,min)	(((x)>(max)) ? (max) : ( ((x)<(min)) ? (min) : (x)))
 #define my_abs(x)				((x>=0)?x:(-x))
 
+#define Wheel_pid_test			1
+#define Pos_pid_test			2
+#define Normal_run				3
 typedef struct
 {
 	float x;

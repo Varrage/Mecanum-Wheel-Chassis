@@ -1,6 +1,5 @@
 #include "can.h"
 #include "delay.h"
-#include "usart.h"
 #include "string.h"
 
 void CAN1_Init(void)
@@ -31,7 +30,7 @@ void CAN1_Init(void)
 	CAN_InitStructure.CAN_NART = ENABLE;				//禁止报文自动传送 
 	CAN_InitStructure.CAN_RFLM = DISABLE;				//报文不锁定,新的覆盖旧的  
 	CAN_InitStructure.CAN_TXFP = DISABLE;				//优先级由报文标识符决定 
-	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;	//模式设置 
+	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;		//模式设置 
 	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;			//重新同步跳跃宽度(Tsjw)为tsjw+1个时间单位 CAN_SJW_1tq~CAN_SJW_4tq
 	CAN_InitStructure.CAN_BS1 = CAN_BS1_9tq;			//Tbs1范围CAN_BS1_1tq ~CAN_BS1_16tq
 	CAN_InitStructure.CAN_BS2 = CAN_BS2_4tq;			//Tbs2范围CAN_BS2_1tq ~	CAN_BS2_8tq
@@ -62,33 +61,27 @@ void CAN1_Init(void)
 	NVIC_Init(&NVIC_InitStructure);
 }
 
-float RealPos_x = 0;
-float RealPos_y = 0;
-float RealPos_z = 0;
-float x_pos = 0;
-float y_pos = 0;
-float w_pos = 0;
 
 CanRxMsg RxMessage;
 void CAN1_RX0_IRQHandler(void)
 {
 	
 	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-	if(RxMessage.StdId == GORY_ID)
+	if(RxMessage.StdId == GYRO_ID)
 	{
 		if(RxMessage.DLC == 4)
 		{
 			float temp=0;
 			memcpy(&temp, &RxMessage.Data[0], 4);
-			w_pos = temp;
+			Chassis.Real_pos.z = temp;
 		}
 		if(RxMessage.DLC == 8)
 		{
 			int32_t  temp=0;
 			memcpy(&temp, &RxMessage.Data[4], 4);
-			//RealPos_x = Encoder2RealX(temp);
+			Chassis.Real_pos.x = Encoder2RealX(temp);
 			memcpy(&temp, &RxMessage.Data[0], 4);
-			//RealPos_y = Encoder2RealY(temp);
+			Chassis.Real_pos.y = Encoder2RealY(temp);
 		}
 	}
 	if(RxMessage.StdId == F1_ID)
@@ -96,11 +89,11 @@ void CAN1_RX0_IRQHandler(void)
 		if (RxMessage.DLC == 8)
 		{
 			int32_t  temp=0;
-			
+		
 			memcpy(&temp, &RxMessage.Data[4], 4);
-			y_pos = Encoder2RealY(temp);
+			Chassis.Real_pos.x = Encoder2RealX(temp);
 			memcpy(&temp, &RxMessage.Data[0], 4);
-			x_pos = Encoder2RealX(temp);
+			Chassis.Real_pos.y = Encoder2RealY(temp);
 			
 		}
 	}	

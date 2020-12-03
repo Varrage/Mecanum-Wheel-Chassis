@@ -47,11 +47,12 @@ int main(void)
 	uart_init(115200);   //串口初始化
 
     /*自定义初始化*/
-	CAN1_Init();
+	Chassis_Init();
+    CAN1_Init();
     Encoder_Init();
     LED_Init();
-	Chassis_Init();
-	
+	Motor_Init();
+
  	OSInit(&err);		    //初始化UCOSIII
 	OS_CRITICAL_ENTER();	//进入临界区			 
 	//创建开始任务

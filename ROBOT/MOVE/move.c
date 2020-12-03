@@ -1,5 +1,5 @@
 #include "move.h"
-
+#include "pid.h"
 
 /*底盘初始化*/
 void Chassis_Init(void)
@@ -8,31 +8,44 @@ void Chassis_Init(void)
 	Chassis.Goal_pos.x = 0;
 	Chassis.Goal_pos.y = 0;
 	Chassis.Goal_pos.z = 0;
-	
+
 	Chassis.Real_pos.x = 0;
 	Chassis.Real_pos.y = 0;
 	Chassis.Real_pos.z = 0;
 	
+	All_Pid_Init();
+
 	Chassis.Vel_x = &Chassis.pid_x.PID_OUT;
 	Chassis.Vel_y = &Chassis.pid_y.PID_OUT;
 	Chassis.Vel_z = &Chassis.pid_z.PID_OUT;
 	
-	All_Pid_Init();
-	Motor_Init();
+	for(int i=0; i<3; i++)
+	{
+		Chassis.Real_wspeed[i] = 0;
+		Chassis.Goal_wspeed[i] = 0;
+		Chassis.Pulse_width[i] = 0;
+	}
+
 }
 
-void speed_distribution(float Vcar_x, float Vcar_y, float Wcar, float *Goal_speed)
+void Speed_distribution(float Vcar_x, float Vcar_y, float Wcar, float *Goal_speed)
 {
 	float a = 8, b = 13;
 	
 	Goal_speed[0] = -Vcar_y - Vcar_x + Wcar*(a+b);     //4个目标速度   左前
-	Goal_speed[1] =  Vcar_y - Vcar_x + Wcar*(a+b);		     //注意模型代换  右前
-	Goal_speed[2] = -Vcar_y + Vcar_x + Wcar*(a+b);		 //	            左后
+	Goal_speed[1] =  Vcar_y - Vcar_x + Wcar*(a+b);	   //注意模型代换  右前
+	Goal_speed[2] = -Vcar_y + Vcar_x + Wcar*(a+b);	   //	           左后
 	Goal_speed[3] =  Vcar_y + Vcar_x - Wcar*(a+b);
-	
+	/*
+	Goal_speed[0] = V2RPM(-Vx *cos(deg2rad(theat)) + Vy * sin(deg2rad(theat))) + VZ2RPM(Vz)
+	Goal_speed[1] = V2RPM(-Vx *cos(deg2rad(theat)) - Vy * sin(deg2rad(theat))) + VZ2RPM(Vz))
+	Goal_speed[2] = V2RPM( Vx *cos(deg2rad(theat)) - Vy * sin(deg2rad(theat))) + VZ2RPM(Vz))
+	Goal_speed[3] = V2RPM( Vx *cos(deg2rad(theat)) + Vy * sin(deg2rad(theat))) + VZ2RPM(Vz))
+	*/
+
 }
 
-void Move_Start(void)
+void Wheel_Move(void)
 {
 	for(u8 i=0;i<4;i++)
 	{

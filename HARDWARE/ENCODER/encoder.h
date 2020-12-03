@@ -1,7 +1,7 @@
 #ifndef _ENCLDER_H
 #define _ENCLDER_H
 #include "sys.h"
-
+#include "struct.h"
 
 void Encoder_Init(void);
 void TIM2_Init(void);

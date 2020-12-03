@@ -86,8 +86,6 @@
 #include <encoder.h>
 #include <led.h>
 #include <pid.h>
-#include <pwm.h>
 #include <tb6612.h>
-#include <tim.h>
 
 #endif

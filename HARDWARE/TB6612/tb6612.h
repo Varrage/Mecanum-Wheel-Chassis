@@ -1,14 +1,8 @@
 #ifndef _TB6612_H_
 #define _TB6612_H_
 #include "sys.h"
-#include "pid.h"
-#include "encoder.h"
+#include "struct.h"
 
-/*一些数值限制*/
-#define TIM_PERIOD	1000    //脉冲宽度限制
-#define VX_LIMIT	1500
-#define VY_LIMIT	1500
-#define VZ_LIMIT	700
 
 /*头部TB6612设置*/
 #define Head_AIN2	PCout(12)//

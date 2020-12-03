@@ -1,5 +1,5 @@
 #include "encoder.h"
-#include "struct.h"
+
 
 void Encoder_Init(void)
 {
@@ -131,6 +131,7 @@ void Encoder_Update(void)
 	static int Encode_Data_Last[4]={0};
 	static int Encode_Data_Base[4]={0};
 	static int Cnt_last[4]={0};
+	int Encode_Data[4] = {0};
 
 	int temp[4]={0};
 	int Encode_Vel[4]={0};

@@ -737,11 +737,6 @@
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\TB6612\tb6612.c</FilePath>
             </File>
-            <File>
-              <FileName>tim.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\TIMER\tim.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
