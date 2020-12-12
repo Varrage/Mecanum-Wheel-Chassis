@@ -4,7 +4,8 @@
 void All_Pid_Init(void)
 {
 	/*轮子速度PID*/
-	PID_Init(&Chassis.pid_vel,0.8,0,5,TIM_PERIOD,-TIM_PERIOD,100,-100);
+	for(u8 i=0;i<4;i++)
+		PID_Init(&Chassis.pid_vel[i],0.8,0,5,TIM_PERIOD,-TIM_PERIOD,100,-100);
 	/*三轴位置PID*/
 	PID_Init(&(Chassis.pid_x), 4,0,5, VX_LIMIT,-VX_LIMIT, 100,-100);
 	PID_Init(&(Chassis.pid_y), 4,0,5, VY_LIMIT,-VY_LIMIT, 100,-100);
@@ -60,8 +61,8 @@ void Vel_PidCal(void)
 {
 	for(u8 i=0;i<4;i++)
 	{
-		PID_Cal(&Chassis.pid_vel,Chassis.Goal_wspeed[i],Chassis.Real_wspeed[i]);
-		Chassis.Pulse_width[i] += (int)Chassis.pid_vel.PID_OUT;
+		PID_Cal(&Chassis.pid_vel[i],Chassis.Goal_wspeed[i],Chassis.Real_wspeed[i]);
+		Chassis.Pulse_width[i] += (int)Chassis.pid_vel[i].PID_OUT;
 	}
 
 }

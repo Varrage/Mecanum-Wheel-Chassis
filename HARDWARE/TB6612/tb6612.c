@@ -1,5 +1,5 @@
 #include "tb6612.h"
-
+#include "encoder.h"
 
 void Motor_Init(void)
 {
@@ -129,7 +129,7 @@ void Motor_PWMInit(void)
 void Motor_SetPWM(u8 ID,int pluse)
 {
 	int pluse_temp = 0;
-	pluse_temp = MY_LIMIT(pluse,TIM_PERIOD,-TIM_PERIOD);
+	pluse_temp = AMP_LIMIT(pluse,TIM_PERIOD,-TIM_PERIOD);
 	if(pluse_temp<0)
 		Motor_Setdir(ID,0);
 	else
@@ -138,14 +138,14 @@ void Motor_SetPWM(u8 ID,int pluse)
 	
 	switch(ID)
 	{
-		case 0:	TIM_SetCompare1(TIM8,pluse_temp);
-				TIM_SetCompare2(TIM8,pluse_temp);
-				TIM_SetCompare1(TIM11,pluse_temp);
-				TIM_SetCompare1(TIM10,pluse_temp);break;
-		case 1:TIM_SetCompare1(TIM8,pluse_temp);break;
-		case 2:TIM_SetCompare2(TIM8,pluse_temp);break;
-		case 3:TIM_SetCompare1(TIM11,pluse_temp);break;
-		case 4:TIM_SetCompare1(TIM10,pluse_temp);break;
+		//case 0:	TIM_SetCompare1(TIM8,pluse_temp);
+		//		TIM_SetCompare2(TIM8,pluse_temp);
+		//		TIM_SetCompare1(TIM11,pluse_temp);
+		//		TIM_SetCompare1(TIM10,pluse_temp);break;
+		case 1:TIM_SetCompare2(TIM8,pluse_temp);break;
+		case 2:TIM_SetCompare1(TIM8,pluse_temp);break;
+		case 3:TIM_SetCompare1(TIM10,pluse_temp);break;
+		case 4:TIM_SetCompare1(TIM11,pluse_temp);break;
 		default:break;
 	}
 }
@@ -160,11 +160,11 @@ static void Motor_Setdir(u8 ID,u8 dir)
 	{
 		switch(ID)
 		{
-			case 0:Head_AIN1 = 1;Head_AIN2 = 0;Head_BIN1 = 0;Head_BIN2 = 1;Tail_AIN1 = 1;Tail_AIN2 = 0;Tail_BIN1 = 0;Tail_BIN2 = 1;	break;
+			//case 0:Head_AIN1 = 1;Head_AIN2 = 0;Head_BIN1 = 0;Head_BIN2 = 1;Tail_AIN1 = 1;Tail_AIN2 = 0;Tail_BIN1 = 0;Tail_BIN2 = 1;	break;
 			case 1:Head_BIN1 = 0;Head_BIN2 = 1;break;
 			case 2:Head_AIN1 = 1;Head_AIN2 = 0;break;
-			case 3:Tail_BIN1 = 0;Tail_BIN2 = 1;break;
-			case 4:Tail_AIN1 = 1;Tail_AIN2 = 0;break;
+			case 3:Tail_BIN1 = 1;Tail_BIN2 = 0;break;
+			case 4:Tail_AIN1 = 0;Tail_AIN2 = 1;break;
 			default:break;
 		}
 	}
@@ -173,11 +173,11 @@ static void Motor_Setdir(u8 ID,u8 dir)
 		
 		switch(ID)
 		{
-			case 0:Head_AIN1 = 0;Head_AIN2 = 1;Head_BIN1 = 1;Head_BIN2 = 0;Tail_AIN1 = 0;Tail_AIN2 = 1;Tail_BIN1 = 1;Tail_BIN2 = 0;	break;
+			//case 0:Head_AIN1 = 0;Head_AIN2 = 1;Head_BIN1 = 1;Head_BIN2 = 0;Tail_AIN1 = 0;Tail_AIN2 = 1;Tail_BIN1 = 1;Tail_BIN2 = 0;	break;
 			case 1:Head_BIN1 = 1;Head_BIN2 = 0;break;
 			case 2:Head_AIN1 = 0;Head_AIN2 = 1;break;
-			case 3:Tail_BIN1 = 1;Tail_BIN2 = 0;break;
-			case 4:Tail_AIN1 = 0;Tail_AIN2 = 1;break;
+			case 3:Tail_BIN1 = 0;Tail_BIN2 = 1;break;
+			case 4:Tail_AIN1 = 1;Tail_AIN2 = 0;break;
 			default:break;
 		}
 	}

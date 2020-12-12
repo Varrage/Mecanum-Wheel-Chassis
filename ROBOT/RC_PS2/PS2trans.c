@@ -1,7 +1,7 @@
 #include "PS2trans.h"
 
 PHASE_T phase={1,1};
-
+/*
 void Mannal_PID(void)
 {	
 	float Vx,Vy;
@@ -24,7 +24,7 @@ void Mannal_PID(void)
 	*Chassis.Vel_y = Vy;
 	
 #endif
-	
+
 	
 }
 	
@@ -48,7 +48,7 @@ void Button_React(void)
 	if((PS2_T.WW_Data&0x80)==0
 		&& (temp&0x80)!=(PS2_T.WW_Data&0x80))	//判断“左”
 		phase.phaseX--;
-/*
+
 	if((PS2_T.YY_Data&0x10)==0)			//判断“三角”
 			
 	if((PS2_T.YY_Data&0x40)==0)			//判断“×”
@@ -67,7 +67,7 @@ void Button_React(void)
 
 	if((PS2_T.YY_Data&0x08)==0)			//判断“R1”
 		flag_throw=1;
-*/	
+
 	phase.phaseY = AMP_LIMIT(phase.phaseY,3,1);
 	phase.phaseX = AMP_LIMIT(phase.phaseX,3,1);
 	temp = PS2_T.WW_Data;
@@ -100,3 +100,4 @@ float VPhase_Create(u8 dir,float cnt)
 	
 	return cnt*re;
 }
+*/

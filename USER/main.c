@@ -50,6 +50,7 @@ int main(void)
 	Chassis_Init();
     CAN1_Init();
     Encoder_Init();
+	UpdateTim_Init();
     LED_Init();
 	Motor_Init();
 

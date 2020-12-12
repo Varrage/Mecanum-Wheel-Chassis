@@ -91,7 +91,7 @@ void Encoder_Init(void)
 }
 
 /*使用定时器2来定时读取编码器信息*/
-void TIM2_Init(void)
+void UpdateTim_Init(void)
 {
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseInitStructure;
 	NVIC_InitTypeDef NVIC_InitStructure;
@@ -136,10 +136,10 @@ void Encoder_Update(void)
 	int temp[4]={0};
 	int Encode_Vel[4]={0};
 	//static float last_time=0;
-	temp[0] = TIM1->CNT;
-	temp[1] = TIM3->CNT;
-	temp[2] = TIM4->CNT;
-	temp[3] = TIM5->CNT;
+	temp[0] = TIM3->CNT;
+	temp[1] = TIM1->CNT;
+	temp[2] = TIM5->CNT;
+	temp[3] = TIM4->CNT;
 	
 	for(u8 i=0;i<4;i++)
 	{
@@ -152,10 +152,12 @@ void Encoder_Update(void)
 		Encode_Data[i] = Encode_Data_Base[i]+temp[i];
 		Encode_Vel[i] = Encode_Data[i]-Cnt_last[i];
 		Cnt_last[i] = Encode_Data[i];
-		if(i == 4)															//这里面有一个光电编码器，有一个是霍尔的，到时候看看是哪一个
-			Chassis.Real_wspeed[i] = ((float)Encode_Vel[i]/(float)4); 					//输出轴转一圈有4*500*30(脉冲升降沿都计数，一个脉冲计数为4,编码器为500线，减速比为30)=6000;1000*60(1000(ms/s)*60(s/min)=60000)
-		else																//因此每ms的计数值在数值上等于rpm
-			Chassis.Real_wspeed[i] = ((float)Encode_Vel[i]/(float)4)*500/13;
+		if(i == 0 || i == 3)															
+			Chassis.Real_wspeed[i] = RAW2MMS(Encode_Vel[i]);
+			//Chassis.Real_wspeed[i] = ((float)Encode_Vel[i]/(float)4); 					//输出轴转一圈有4*500*30(脉冲升降沿都计数，一个脉冲计数为4,编码器为500线，减速比为30)=60000;
+		else if(i == 1 || i == 2)																				//1000*60(1000(ms/s)*60(s/min)=60000)
+			//Chassis.Real_wspeed[i] = (-(float)Encode_Vel[i]/(float)4);																			//因此每ms的计数值在数值上等于rpm
+			Chassis.Real_wspeed[i] = RAW2MMS(-Encode_Vel[i]);							//原式(-(float)Encode_Vel[i]/(float)4*500/13);
 			
 	}
 

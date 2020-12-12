@@ -27,9 +27,9 @@ void CAN1_Init(void)
 	CAN_InitStructure.CAN_TTCM = DISABLE;				//非时间触发通信模式   
 	CAN_InitStructure.CAN_ABOM = DISABLE;				//软件自动离线管理	  
 	CAN_InitStructure.CAN_AWUM = DISABLE;				//睡眠模式通过软件唤醒(清除CAN->MCR的SLEEP位)
-	CAN_InitStructure.CAN_NART = ENABLE;				//禁止报文自动传送 
+	CAN_InitStructure.CAN_NART = DISABLE;				//禁止报文自动传送 
 	CAN_InitStructure.CAN_RFLM = DISABLE;				//报文不锁定,新的覆盖旧的  
-	CAN_InitStructure.CAN_TXFP = DISABLE;				//优先级由报文标识符决定 
+	CAN_InitStructure.CAN_TXFP = ENABLE;				//优先级由报文标识符决定 
 	CAN_InitStructure.CAN_Mode = CAN_Mode_Normal;		//模式设置 
 	CAN_InitStructure.CAN_SJW = CAN_SJW_1tq;			//重新同步跳跃宽度(Tsjw)为tsjw+1个时间单位 CAN_SJW_1tq~CAN_SJW_4tq
 	CAN_InitStructure.CAN_BS1 = CAN_BS1_9tq;			//Tbs1范围CAN_BS1_1tq ~CAN_BS1_16tq
@@ -62,28 +62,44 @@ void CAN1_Init(void)
 }
 
 
+float realAng;
+float realOmiga;
+int32_t cnt_x, cnt_y = 0;
+float current_x,current_y=0;
 CanRxMsg RxMessage;
 void CAN1_RX0_IRQHandler(void)
 {
 	
 	CAN_Receive(CAN1, CAN_FIFO0, &RxMessage);
-	if(RxMessage.StdId == GYRO_ID)
+		if(RxMessage.StdId==0x11)
 	{
-		if(RxMessage.DLC == 4)
-		{
-			float temp=0;
-			memcpy(&temp, &RxMessage.Data[0], 4);
-			Chassis.Real_pos.z = temp;
-		}
-		if(RxMessage.DLC == 8)
-		{
-			int32_t  temp=0;
-			memcpy(&temp, &RxMessage.Data[4], 4);
-			Chassis.Real_pos.x = Encoder2RealX(temp);
-			memcpy(&temp, &RxMessage.Data[0], 4);
-			Chassis.Real_pos.y = Encoder2RealY(temp);
-		}
+		memcpy(&realAng, &RxMessage.Data[0], 4);
+		memcpy(&realOmiga, &RxMessage.Data[4], 4);
 	}
+		if(RxMessage.StdId==0x12)
+	{
+		memcpy(&cnt_x, &RxMessage.Data[0], 4);
+		memcpy(&cnt_y, &RxMessage.Data[4], 4);
+		current_x=cnt_x*0.0798;                        //CNT转成毫米
+		current_y=cnt_y*0.0798;
+	}
+//	if(RxMessage.StdId == GYRO_ID)
+//	{
+//		if(RxMessage.DLC == 4)
+//		{
+//			float temp=0;
+//			memcpy(&temp, &RxMessage.Data[0], 4);
+//			Chassis.Real_pos.z = temp;
+//		}
+//		if(RxMessage.DLC == 8)
+//		{
+//			int32_t  temp=0;
+//			memcpy(&temp, &RxMessage.Data[4], 4);
+//			Chassis.Real_pos.x = Encoder2RealX(temp);
+//			memcpy(&temp, &RxMessage.Data[0], 4);
+//			Chassis.Real_pos.y = Encoder2RealY(temp);
+//		}
+//	}
 	if(RxMessage.StdId == F1_ID)
 	{
 		if (RxMessage.DLC == 8)

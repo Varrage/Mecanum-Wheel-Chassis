@@ -4,7 +4,7 @@
 #include "struct.h"
 
 void Encoder_Init(void);
-void TIM2_Init(void);
+void UpdateTim_Init(void);
 void Encoder_Update(void);
 #endif
 

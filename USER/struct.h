@@ -12,14 +12,15 @@
 
 /*一些数值限制*/
 #define TIM_PERIOD	1000    //脉冲宽度限制
-#define VX_LIMIT	1500
-#define VY_LIMIT	1500
+#define VX_LIMIT	500
+#define VY_LIMIT	500
 #define VZ_LIMIT	700
 
-#define ENCODER_WIRE		500										//编码器线程
+#define ENCODER_WIRE		13										//编码器线程
 #define DEC_RAYIO			30										//电机减速比
-
+	
 #define PI						(3.141592653f)
+#define WHEEL_DIAMETER			(60)
 /*码盘从动轮直径mm*/
 #define SUBWHEEL_DIAMETER		(50.7f)
 /*底盘旋转半径mm*/	
@@ -34,22 +35,26 @@
 	
 /*码盘数据转化为真实坐标值mm*/
 #define Encoder2Real(x)			((x) * (SUBWHEEL_DIAMETER * PI) / 2000)
+
+/*麦轮速度转换为MMS*/
+#define RAW2MMS(raw) 			(PI*WHEEL_DIAMETER*(1000*(float)raw/(float)(4*1560))) //后面一大块是RPM
 /*角度制与弧度制的相互转换*/
 #define rad2deg(rad)			((rad) / PI * 180)						
 #define deg2rad(deg)			((deg) * PI / 180)
 	
 /*车体前进速度mm/s转化为轮子的转速rps*/
 #define	MMS_2_RPS(x)			((x)/(PI*WHEEL_DIAMETER))
-/*30速度转换*/
-#define RPS2JV(rps)				((int)(rps*(2000*EC30RR)))
-	
+/*速度转换*/
+#define RPS2MMS(rpm)			(PI*WHEEL_DIAMETER*rpm)
+
+
 /*限幅*/
 #define AMP_LIMIT(x,max,min)	(((x)>(max)) ? (max) : ( ((x)<(min)) ? (min) : (x)))
 #define my_abs(x)				((x>=0)?x:(-x))
 
-#define Wheel_pid_test			1
-#define Pos_pid_test			2
-#define Normal_run				3
+#define Wheel_pid_test			0
+#define Pos_pid_test			1
+#define Normal_run				0
 typedef struct
 {
 	float x;
@@ -99,7 +104,7 @@ typedef struct
 	/*轮子速度*/
 	float Real_wspeed[4];
 	float Goal_wspeed[4];
-	PID_t pid_vel;
+	PID_t pid_vel[4];
 
 	/*PWM数值*/
 	int Pulse_width[4];

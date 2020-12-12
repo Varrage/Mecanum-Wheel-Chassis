@@ -1,5 +1,6 @@
 #include "move.h"
 #include "pid.h"
+#include "tb6612.h"
 
 /*底盘初始化*/
 void Chassis_Init(void)
@@ -32,10 +33,10 @@ void Speed_distribution(float Vcar_x, float Vcar_y, float Wcar, float *Goal_spee
 {
 	float a = 8, b = 13;
 	
-	Goal_speed[0] = -Vcar_y - Vcar_x + Wcar*(a+b);     //4个目标速度   左前
-	Goal_speed[1] =  Vcar_y - Vcar_x + Wcar*(a+b);	   //注意模型代换  右前
-	Goal_speed[2] = -Vcar_y + Vcar_x + Wcar*(a+b);	   //	           左后
-	Goal_speed[3] =  Vcar_y + Vcar_x - Wcar*(a+b);
+	Goal_speed[0] = Vcar_y + Vcar_x + Wcar*(a+b);     //4个目标速度   左前
+	Goal_speed[1] = Vcar_y - Vcar_x - Wcar*(a+b);	   //注意模型代换  右前
+	Goal_speed[2] = Vcar_y + Vcar_x - Wcar*(a+b);	   //	           左后
+	Goal_speed[3] = Vcar_y - Vcar_x + Wcar*(a+b);
 	/*
 	Goal_speed[0] = V2RPM(-Vx *cos(deg2rad(theat)) + Vy * sin(deg2rad(theat))) + VZ2RPM(Vz)
 	Goal_speed[1] = V2RPM(-Vx *cos(deg2rad(theat)) - Vy * sin(deg2rad(theat))) + VZ2RPM(Vz))
@@ -47,10 +48,10 @@ void Speed_distribution(float Vcar_x, float Vcar_y, float Wcar, float *Goal_spee
 
 void Wheel_Move(void)
 {
-	for(u8 i=0;i<4;i++)
-	{
-		Motor_SetPWM(i,Chassis.Pulse_width[i]);
-	}
+	Motor_SetPWM(1,Chassis.Pulse_width[0]);
+	Motor_SetPWM(2,Chassis.Pulse_width[1]);
+	Motor_SetPWM(3,Chassis.Pulse_width[2]);
+	Motor_SetPWM(4,Chassis.Pulse_width[3]);
 }
 
 /*PID初始化

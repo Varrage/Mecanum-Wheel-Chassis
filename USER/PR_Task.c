@@ -6,25 +6,27 @@ Chassis_t Chassis = {0};
 
 void Control_task(void *p_arg)
 {
-	int stat = Normal_run;
 
-		#if stat == Wheel_pid_test
+		#if Wheel_pid_test
 			while(1)
 			{
-				PID_Cal(&Chassis.pid_vel, 100 ,Chassis.Real_wspeed[0]);
-				Chassis.Pulse_width[0] += (int)Chassis.pid_vel.PID_OUT;
+				PID_Cal(&Chassis.pid_vel[0], 500 ,Chassis.Real_wspeed[0]);
+				Chassis.Pulse_width[0] += (int)(Chassis.pid_vel[0].PID_OUT);
+				Motor_SetPWM(1,Chassis.Pulse_width[0]);
+				printf("%f\r\n",Chassis.Real_wspeed[0]);
 				delay_ms(5);
 			}
 		#endif
 
-		#if stat == Pos_pid_test
-			float Vcar_x = 0, Vcar_y = 100, Wcar = 0;
+		#if Pos_pid_test
+			
 			while(1)
 			{
-				PID_Cal(&(Chassis.pid_x), 1000, Chassis.Real_pos.x);
-				PID_Cal(&(Chassis.pid_y), 0, Chassis.Real_pos.y);
-				PID_Cal(&(Chassis.pid_z), 0, Chassis.Real_pos.z);
-				Speed_distribution(*Chassis.Vel_x, *Chassis.Vel_y, *Chassis.Vel_z, Chassis.Goal_wspeed);
+				//PID_Cal(&(Chassis.pid_x), 1000, Chassis.Real_pos.x);
+				//PID_Cal(&(Chassis.pid_y), 0, Chassis.Real_pos.y);
+				//PID_Cal(&(Chassis.pid_z), 0, Chassis.Real_pos.z);
+				//GyroEncoder_Set(0x11,300);
+				Speed_distribution(200, 0, 0, Chassis.Goal_wspeed);
 				Vel_PidCal();
 				Wheel_Move();
 				delay_ms(5);
@@ -32,7 +34,7 @@ void Control_task(void *p_arg)
 
 		#endif
 
-		#if stat == Normal_run
+		#if Normal_run
 			while(1)
 			{
 				Pos_PidCal();
@@ -48,11 +50,18 @@ void Control_task(void *p_arg)
 void Loop_task(void *p_arg)
 {
 	while(1)
-	{}
+	{
+		//探测到东西（10cm），记录下点，进行膨胀，然后记录下点的位置
+		delay_ms(1000);
+	}
 }
 void Catch_task(void *p_arg)
 {
 	while(1)
+	{
+		
+		delay_ms(1000);
+	}
 }
 /*
 //电机控制任务
